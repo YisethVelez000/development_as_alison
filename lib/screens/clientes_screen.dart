@@ -47,13 +47,11 @@ class EditarClientes {
     final response = await http.get(Uri.parse(
         'https://apiusuarios-copia.onrender.com/api/routes/clientes/d'));
     if (response.statusCode == 200) {
-      print(response.statusCode);
       List jsonResponse = json.decode(response.body);
       return jsonResponse
           .map((cliente) => EditarClientes.fromJson(cliente))
           .toList();
     } else {
-      print(response.statusCode);
       throw Exception('Failed to load clientes from API');
     }
   }
@@ -98,11 +96,9 @@ class Clientes {
     final response = await http.get(Uri.parse(
         'https://apiusuarios-copia.onrender.com/api/routes/clientes'));
     if (response.statusCode == 200) {
-      print(response.statusCode);
       List jsonResponse = json.decode(response.body);
       return jsonResponse.map((cliente) => Clientes.fromJson(cliente)).toList();
     } else {
-      print(response.statusCode);
       throw Exception('Failed to load clientes from API');
     }
   }
@@ -139,12 +135,9 @@ class _ClientesScreenState extends State<ClientesScreen> {
         },
         body: jsonEncode(clienteEditado));
     if (response.statusCode != 200) {
-            print(response.statusCode);
-            print(url);
       throw Exception('Failed to edit cliente');
 
     } else {
-      Navigator.of(context).pop();
     }
   }
 
@@ -242,7 +235,6 @@ class _ClientesScreenState extends State<ClientesScreen> {
                                           final rol = clientesLista.rol;
                                           final direccion =
                                               clientesLista.direccion;
-                                          final id = clientesLista.id;
 
                                           //Asignamos los valores a los controladores
                                           nombreController.text = nombre;
