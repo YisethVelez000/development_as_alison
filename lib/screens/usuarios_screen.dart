@@ -125,55 +125,83 @@ class _UsuariosScreenState extends State<UsuariosScreen> {
                   trailing: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      IconButton(onPressed: () {
-                        showDialog(
-                          context: context,
-                          builder: (BuildContext context) {
-                            final nameController = TextEditingController(
-                                text: snapshot.data![index].name);
-                            final emailController = TextEditingController(
-                                text: snapshot.data![index].email);
-                            final rolController = TextEditingController(
-                                text: snapshot.data![index].rol);
+                      IconButton(
+                          onPressed: () {
+                            showDialog(
+                              context: context,
+                              builder: (BuildContext context) {
+                                final nameController = TextEditingController(
+                                    text: snapshot.data![index].name);
+                                final emailController = TextEditingController(
+                                    text: snapshot.data![index].email);
+                                final rolController = TextEditingController(
+                                    text: snapshot.data![index].rol);
 
-                            return AlertDialog(
-                              title: const Text('Editar Usuario'),
-                              content: Column(
-                                children: [
-                                  TextField(
-                                    controller: nameController,
-                                    decoration: InputDecoration(
-                                    hintText: snapshot.data![index].name,
-                                    ),
+                                return AlertDialog(
+                                  title: const Text('Editar Usuario'),
+                                  content: Column(
+                                    children: [
+                                      TextField(
+                                        controller: nameController,
+                                        decoration: InputDecoration(
+                                          border: const OutlineInputBorder(
+                                            borderSide:
+                                                BorderSide(color: Colors.blue),
+                                            borderRadius: BorderRadius.all(
+                                                Radius.circular(20)),
+                                          ),
+                                          hintText: snapshot.data![index].name,
+                                        ),
+                                      ),
+                                      TextField(
+                                        controller: emailController,
+                                        decoration: const InputDecoration(
+                                          border: OutlineInputBorder(
+                                            borderSide:
+                                                BorderSide(color: Colors.blue),
+                                            borderRadius: BorderRadius.all(
+                                                Radius.circular(20)),
+                                          ),
+                                          hintText: 'Email',
+                                        ),
+                                      ),
+                                      TextField(
+                                        controller: rolController,
+                                        decoration: const InputDecoration(
+                                          border: OutlineInputBorder(
+                                            borderSide:
+                                                BorderSide(color: Colors.blue),
+                                            borderRadius: BorderRadius.all(
+                                                Radius.circular(20)),
+                                          ),
+                                          hintText: 'Rol',
+                                        ),
+                                      ),
+                                    ],
                                   ),
-                                  TextField(
-                                    controller: emailController,
-                                    decoration: const InputDecoration(
-                                      hintText: 'Email',
+                                  actions: [
+                                    TextButton(
+                                      onPressed: () {
+                                        var usuarioEditado = {
+                                          'name': nameController.text,
+                                          'email': emailController.text,
+                                          'rol': rolController.text,
+                                        };
+                                        editarUsuario(snapshot.data![index].id,
+                                            usuarioEditado);
+                                          
+                                            setState(() {
+                                             
+                                            });
+                                      },
+                                      child: const Text('Editar'),
                                     ),
-                                  ),
-                                  TextField(
-                                    controller: rolController,
-                                    decoration: const InputDecoration(
-                                      hintText: 'Rol',
-                                    ),
-                                  ),
-                                ],
-                              ),
-                              actions: [
-                                TextButton(
-                                  onPressed: () {
-                                    editarUsuario(
-                                        snapshot.data![index].id, snapshot.data);
-                                    Navigator.of(context).pop();
-                                  },
-                                  child: const Text('Editar'),
-                                ),
-                              ],
+                                  ],
+                                );
+                              },
                             );
                           },
-                        );
-                      }, icon: Icon(Icons.edit)),
+                          icon: const Icon(Icons.edit)),
                       IconButton(
                         icon: const Icon(Icons.delete),
                         onPressed: () {
