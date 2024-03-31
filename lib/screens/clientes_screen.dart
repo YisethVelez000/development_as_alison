@@ -102,17 +102,6 @@ class Clientes {
       throw Exception('Failed to load clientes from API');
     }
   }
-
-  // Future function to delete a cliente by its ID
-  static Future<void> eliminarCliente(String id) async {
-    final response = await http.delete(Uri.parse(
-        'https://apiusuarios-copia.onrender.com/api/routes/clientes/$id'));
-    if (response.statusCode != 200) {
-      throw Exception('Failed to delete cliente');
-    } else {
-      //Mostramos un dialogo de cliente eeiminado con exito
-    }
-  }
 }
 
 class _ClientesScreenState extends State<ClientesScreen> {
@@ -136,8 +125,27 @@ class _ClientesScreenState extends State<ClientesScreen> {
         body: jsonEncode(clienteEditado));
     if (response.statusCode != 200) {
       throw Exception('Failed to edit cliente');
-
     } else {
+      setState(() {});
+      // ignore: use_build_context_synchronously
+      ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Cliente editado correctamente')));
+    }
+  }
+
+  Future<void> eliminarCliente(String id) async {
+    final response = await http.delete(Uri.parse(
+        'https://apiusuarios-copia.onrender.com/api/routes/clientes/$id'));
+    if (response.statusCode != 200) {
+      throw Exception('Failed to delete cliente');
+    } else {
+      setState(() {
+
+      });
+      //Mostramos un dialogo en la parte inferior de la pantalla
+      // ignore: use_build_context_synchronously
+      ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Cliente eliminado correctamente')));
     }
   }
 
@@ -183,12 +191,12 @@ class _ClientesScreenState extends State<ClientesScreen> {
                                   ),
                                   TextButton(
                                     onPressed: () {
-                                      Clientes.eliminarCliente(
+                                      eliminarCliente(
                                           clientesLista.id);
                                       ScaffoldMessenger.of(context)
                                           .showSnackBar(const SnackBar(
                                               content: Text(
-                                                  'Exportación eliminada correctamente')));
+                                                  'Cliente eliminado correctamente')));
                                       //Recargar la vista de listado
                                       setState(() {});
                                       // ignore: use_build_context_synchronously
@@ -205,187 +213,147 @@ class _ClientesScreenState extends State<ClientesScreen> {
                       IconButton(
                         icon: const Icon(Icons.edit),
                         onPressed: () {
+                          //Mostrar formulario para editar
                           showDialog(
                             context: context,
                             builder: (BuildContext context) {
+                              final nombre = clientesLista.nombre;
+                              final apellido = clientesLista.apellido;
+                              final telefono = clientesLista.telefono;
+                              final email = clientesLista.email;
+                              final estado = clientesLista.estado;
+                              final rol = clientesLista.rol;
+                              final direccion = clientesLista.direccion;
+
+                              //Asignamos los valores a los controladores
+                              nombreController.text = nombre;
+                              apellidoController.text = apellido;
+                              telefonoController.text = telefono.toString();
+                              emailController.text = email;
+                              estadoController.text = estado;
+                              rolController.text = rol;
+                              direccionController.text = direccion;
                               return AlertDialog(
                                 title: const Text('Editar cliente'),
-                                content: Text(
-                                    '¿Estás seguro de que deseas editar a ${clientesLista.nombre} ${clientesLista.apellido}?'),
-                                actions: <Widget>[
-                                  TextButton(
-                                    onPressed: () {
-                                      Navigator.of(context).pop();
-                                    },
-                                    child: const Text('Cancelar'),
-                                  ),
-                                  TextButton(
-                                    onPressed: () {
-                                      //Mostrar formulario para editar
-                                      showDialog(
-                                        context: context,
-                                        builder: (BuildContext context) {
-                                          final nombre = clientesLista.nombre;
-                                          final apellido =
-                                              clientesLista.apellido;
-                                          final telefono =
-                                              clientesLista.telefono;
-                                          final email = clientesLista.email;
-                                          final estado = clientesLista.estado;
-                                          final rol = clientesLista.rol;
-                                          final direccion =
-                                              clientesLista.direccion;
-
-                                          //Asignamos los valores a los controladores
-                                          nombreController.text = nombre;
-                                          apellidoController.text = apellido;
-                                          telefonoController.text =
-                                              telefono.toString();
-                                          emailController.text = email;
-                                          estadoController.text = estado;
-                                          rolController.text = rol;
-                                          direccionController.text = direccion;
-                                          return AlertDialog(
-                                            title: const Text('Editar cliente'),
-                                            content: Column(
-                                              children: <Widget>[
-                                                TextFormField(
-                                                  controller: nombreController,
-                                                  decoration: InputDecoration(
-                                                    border: const OutlineInputBorder(
-                                                      borderSide: BorderSide(
-                                                          color: Colors.blue),
-                                                      borderRadius:
-                                                          BorderRadius.all(
-                                                              Radius.circular(
-                                                                  20)),
-                                                    ),
-                                                    hintText: nombre,
-                                                    labelText: 'Nombre',
-                                                  ),
-                                                ),
-                                                const SizedBox(height: 20),
-                                                TextFormField(
-                                                  controller:
-                                                      apellidoController,
-                                                  decoration: InputDecoration(
-                                                    border: const OutlineInputBorder(
-                                                      borderSide: BorderSide(
-                                                          color: Colors.blue),
-                                                      borderRadius:
-                                                          BorderRadius.all(
-                                                              Radius.circular(
-                                                                  20)),
-                                                    ),
-                                                    hintText: apellido,
-                                                    labelText: 'Apellido',
-                                                  ),
-                                                ),
-                                                const SizedBox(height: 20),
-                                                TextFormField(
-                                                  controller:
-                                                      telefonoController,
-                                                  keyboardType:
-                                                      TextInputType.number,
-                                                  decoration: InputDecoration(
-                                                    border: const OutlineInputBorder(
-                                                      borderSide: BorderSide(
-                                                          color: Colors.blue),
-                                                      borderRadius:
-                                                          BorderRadius.all(
-                                                              Radius.circular(
-                                                                  20)),
-                                                    ),
-                                                    hintText:
-                                                        telefono.toString(),
-                                                    labelText: 'Telefono',
-                                                  ),
-                                                ),
-                                                const SizedBox(height: 20),
-                                                TextFormField(
-                                                  controller: emailController,
-                                                  keyboardType: TextInputType
-                                                      .emailAddress,
-                                                  decoration: InputDecoration(
-                                                    border: const OutlineInputBorder(
-                                                      borderSide: BorderSide(
-                                                          color: Colors.blue),
-                                                      borderRadius:
-                                                          BorderRadius.all(
-                                                              Radius.circular(
-                                                                  20)),
-                                                    ),
-                                                    hintText: email,
-                                                    labelText: 'Email',
-                                                  ),
-                                                ),
-                                                const SizedBox(height: 20),
-                                                TextFormField(
-                                                  controller: estadoController,
-                                                  decoration: InputDecoration(
-                                                    border: const OutlineInputBorder(
-                                                      borderSide: BorderSide(
-                                                          color: Colors.blue),
-                                                      borderRadius:
-                                                          BorderRadius.all(
-                                                              Radius.circular(
-                                                                  20)),
-                                                    ),
-                                                    hintText: estado,
-                                                    labelText: 'Estado',
-                                                  ),
-                                                ),
-                                                
-                                                const SizedBox(height: 20),
-                                                TextFormField(
-                                                  controller:
-                                                      direccionController,
-                                                  decoration: InputDecoration(
-                                                    border: const OutlineInputBorder(
-                                                      borderSide: BorderSide(
-                                                          color: Colors.blue),
-                                                      borderRadius:
-                                                          BorderRadius.all(
-                                                              Radius.circular(
-                                                                  20)),
-                                                    ),
-                                                    hintText: direccion,
-                                                    labelText: 'Direccion',
-                                                  ),
-                                                ),
-                                                const SizedBox(height: 20),
-                                                MaterialButton(onPressed: (){
-                                                  var id = clientesLista.id;
-                                                  var clienteEditado = {
-                                                    'nombre': nombreController.text,
-                                                    'apellido': apellidoController.text,
-                                                    'telefono': telefonoController.text,
-                                                    'email': emailController.text,
-                                                    'estado': estadoController.text,
-                                                    'rol': 'cliente',
-                                                    'direccion': direccionController.text,
-                                                  };
-                                                  editarCliente(id, clienteEditado);
-                                                  setState(() {
-                                                  });
-                                                }, child: const Text('Editar cliente')
-                                                ),
-                                                MaterialButton(onPressed: (){
-                                                  Navigator.of(context).pop();
-                                                }, child: const Text('Cancelar')
-                                                ),
-                                              ],
-                                            ),
-                                          );
+                                content: Column(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: <Widget>[
+                                    TextFormField(
+                                      controller: nombreController,
+                                      decoration: InputDecoration(
+                                        border: const OutlineInputBorder(
+                                          borderSide:
+                                              BorderSide(color: Colors.blue),
+                                          borderRadius: BorderRadius.all(
+                                              Radius.circular(20)),
+                                        ),
+                                        hintText: nombre,
+                                        labelText: 'Nombre',
+                                      ),
+                                    ),
+                                    const SizedBox(height: 20),
+                                    TextFormField(
+                                      controller: apellidoController,
+                                      decoration: InputDecoration(
+                                        border: const OutlineInputBorder(
+                                          borderSide:
+                                              BorderSide(color: Colors.blue),
+                                          borderRadius: BorderRadius.all(
+                                              Radius.circular(20)),
+                                        ),
+                                        hintText: apellido,
+                                        labelText: 'Apellido',
+                                      ),
+                                    ),
+                                    const SizedBox(height: 20),
+                                    TextFormField(
+                                      controller: telefonoController,
+                                      keyboardType: TextInputType.number,
+                                      decoration: InputDecoration(
+                                        border: const OutlineInputBorder(
+                                          borderSide:
+                                              BorderSide(color: Colors.blue),
+                                          borderRadius: BorderRadius.all(
+                                              Radius.circular(20)),
+                                        ),
+                                        hintText: telefono.toString(),
+                                        labelText: 'Telefono',
+                                      ),
+                                    ),
+                                    const SizedBox(height: 20),
+                                    TextFormField(
+                                      controller: emailController,
+                                      keyboardType: TextInputType.emailAddress,
+                                      decoration: InputDecoration(
+                                        border: const OutlineInputBorder(
+                                          borderSide:
+                                              BorderSide(color: Colors.blue),
+                                          borderRadius: BorderRadius.all(
+                                              Radius.circular(20)),
+                                        ),
+                                        hintText: email,
+                                        labelText: 'Email',
+                                      ),
+                                    ),
+                                    const SizedBox(height: 20),
+                                    TextFormField(
+                                      controller: estadoController,
+                                      decoration: InputDecoration(
+                                        border: const OutlineInputBorder(
+                                          borderSide:
+                                              BorderSide(color: Colors.blue),
+                                          borderRadius: BorderRadius.all(
+                                              Radius.circular(20)),
+                                        ),
+                                        hintText: estado,
+                                        labelText: 'Estado',
+                                      ),
+                                    ),
+                                    const SizedBox(height: 20),
+                                    TextFormField(
+                                      controller: direccionController,
+                                      decoration: InputDecoration(
+                                        border: const OutlineInputBorder(
+                                          borderSide:
+                                              BorderSide(color: Colors.blue),
+                                          borderRadius: BorderRadius.all(
+                                              Radius.circular(20)),
+                                        ),
+                                        hintText: direccion,
+                                        labelText: 'Direccion',
+                                      ),
+                                    ),
+                                    const SizedBox(height: 20),
+                                    MaterialButton(
+                                        onPressed: () {
+                                          var id = clientesLista.id;
+                                          var clienteEditado = {
+                                            'nombre': nombreController.text,
+                                            'apellido': apellidoController.text,
+                                            'telefono': telefonoController.text,
+                                            'email': emailController.text,
+                                            'estado': estadoController.text,
+                                            'rol': 'cliente',
+                                            'direccion':
+                                                direccionController.text,
+                                          };
+                                          editarCliente(id, clienteEditado);
+                                          setState(() {
+                                           Navigator.of(context).pop();
+                                          });
                                         },
-                                      );
-                                    },
-                                    child: const Text('Editar'),
-                                  ),
-                                ],
+                                        child: const Text('Editar cliente')),
+                                    MaterialButton(
+                                        onPressed: () {
+                                          Navigator.of(context).pop();
+                                        },
+                                        child: const Text('Cancelar')),
+                                  ],
+                                ),
                               );
                             },
                           );
+                          setState(() {});
                         },
                       ),
                     ],

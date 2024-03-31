@@ -1,6 +1,5 @@
 import 'package:development_as_alison/screens/clientes_screen.dart';
 import 'package:development_as_alison/screens/login_screen.dart';
-import 'package:development_as_alison/screens/perfil_screen.dart';
 import 'package:development_as_alison/screens/produccion_screen.dart';
 import 'package:development_as_alison/screens/usuarios_screen.dart';
 import 'package:flutter/material.dart';
@@ -51,15 +50,6 @@ class _HomeScreenState extends State<HomeScreen> {
                       Navigator.push(
                         context,
                         MaterialPageRoute(builder: (context) => const UsuariosScreen()),
-                      );
-                    },
-                  ),
-                  ListTile(
-                    title: const Text('Perfil'),
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => const PerfilScreen()),
                       );
                     },
                   ),

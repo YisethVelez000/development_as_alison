@@ -219,6 +219,7 @@ class _RegistrarClientesScreenState extends State<RegistrarClientesScreen> {
                     'rol': 'Cliente'
                   };
                   registrar(usuario);
+                  
                 }
               },
               child: const Text('Crear usuario'),
@@ -226,20 +227,6 @@ class _RegistrarClientesScreenState extends State<RegistrarClientesScreen> {
 
             // Botón de registro
             const SizedBox(height: 30),
-          ],
-        ),
-      ),
-      // Barra de navegación inferior
-      bottomNavigationBar: const BottomAppBar(
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text(
-              'Alison Yiseth Puerta Velez ADSO 2670689 ',
-              style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
-            ),
-            Icon(Icons.terminal_outlined,
-                color: Color.fromARGB(255, 88, 133, 255), size: 20),
           ],
         ),
       ),

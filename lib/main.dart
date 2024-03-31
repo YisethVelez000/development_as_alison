@@ -1,5 +1,5 @@
 
-import 'package:development_as_alison/screens/home_screen.dart';
+import 'package:development_as_alison/screens/login_screen.dart';
 
 import 'package:flutter/material.dart';
 
@@ -14,7 +14,7 @@ class MainApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return const MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: HomeScreen(),
+      home: LoginScreen(),
     );
   }
 }

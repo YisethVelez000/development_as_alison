@@ -77,17 +77,7 @@ class Usuarios {
       throw Exception('Failed to load album');
     }
   }
-
-  //Realizamos el delete a la API
-  static Future<void> eliminarUsuario(String id) async {
-    final response = await http.delete(Uri.parse(
-        'https://apiusuarios-copia.onrender.com/api/user/eliminarUsuario/$id'));
-    if (response.statusCode != 200) {
-      throw Exception('Failed to delete usuario');
-    } else {
-      //Mostramos un dialogo de cliente eeiminado con exito
-    }
-  }
+ 
 }
 
 class _UsuariosScreenState extends State<UsuariosScreen> {
@@ -102,11 +92,31 @@ class _UsuariosScreenState extends State<UsuariosScreen> {
       body: jsonEncode(usuario),
     );
     if (response.statusCode != 200) {
-      print(response.body);
-      print(response.statusCode);
       throw Exception('Failed to update usuario');
     } else {
-      //Mostramos un dialogo de usuario editado con exito
+      setState(() {
+        
+      });
+      //Mostramos un dialogo inferior de usuario actualizado con exito
+      // ignore: use_build_context_synchronously
+      ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Usuario actualizado')));
+
+    }
+  }
+  Future<void> eliminarUsuario(String email) async {
+    final response = await http.delete(Uri.parse(
+        'https://apiusuarios-copia.onrender.com/api/user/eliminarUsuario/$email'));
+    if (response.statusCode != 200) {
+      throw Exception('Failed to delete usuario');
+    } else {
+      setState(() {
+        //Actualizamos la lista de usuarios
+      });
+      //Mostramos un dialogo inferior de usuario eliminado con exito
+            // ignore: use_build_context_synchronously
+            ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Usuario eliminado')));
     }
   }
 
@@ -210,9 +220,9 @@ class _UsuariosScreenState extends State<UsuariosScreen> {
                                         };
                                         editarUsuario(email,
                                             usuario as Map<String, dynamic>);
-
-                                        setState(() {});
-                                        Navigator.of(context).pop();
+                                        setState(() {
+                                          Navigator.of(context).pop();
+                                        });
                                       },
                                       child: const Text('Editar',
                                           style: TextStyle(
@@ -228,10 +238,17 @@ class _UsuariosScreenState extends State<UsuariosScreen> {
                       IconButton(
                         icon: const Icon(Icons.delete),
                         onPressed: () {
-                          Usuarios.eliminarUsuario(snapshot.data![index].id);
+                         eliminarUsuario(snapshot.data![index].email);
+                          setState(() {
+                            //Actualizamos la lista de usuarios
+                          });
                         },
                       ),
+                      snapshot.data![index].rol == 'admin'|| snapshot.data![index].rol == 'Admin' || snapshot.data![index].rol == 'Administrador' || snapshot.data![index].rol == 'administrador'
+                          ? const Icon(Icons.admin_panel_settings)
+                          : const Icon(Icons.person),
                     ],
+                    
                   ),
                 );
               },
@@ -243,13 +260,14 @@ class _UsuariosScreenState extends State<UsuariosScreen> {
         },
       ),
       //Creamos un boton para crear un nuevo usuario
-      floatingActionButton: FloatingActionButton(onPressed: (){
-        final route = MaterialPageRoute(builder: (context) => const RegistrarClientesScreen());
-        Navigator.push(context, route);
-      },
-      child: const Icon(Icons.add),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          final route = MaterialPageRoute(
+              builder: (context) => const RegistrarClientesScreen());
+          Navigator.push(context, route);
+        },
+        child: const Icon(Icons.add),
       ),
-
     );
   }
 }
