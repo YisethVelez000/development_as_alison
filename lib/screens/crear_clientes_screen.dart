@@ -1,4 +1,3 @@
-
 import 'package:development_as_alison/screens/clientes_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
@@ -35,7 +34,8 @@ class _CrearClientesScreenState extends State<CrearClientesScreen> {
     var response = await http.post(url, body: clientes);
     if (response.statusCode == 200) {
       // Redirigir al usuario a la pantalla de clientes
-      final route = MaterialPageRoute(builder: (context) => const ClientesScreen());
+      final route =
+          MaterialPageRoute(builder: (context) => const ClientesScreen());
       // ignore: use_build_context_synchronously
       Navigator.push(context, route);
     } else {
@@ -289,33 +289,25 @@ class _CrearClientesScreenState extends State<CrearClientesScreen> {
                       'rol': 'cliente',
                     };
                     crearCliente(clientes);
-
-                    // Limpiar los campos después de enviar la información
-                    nameController.clear();
-                    apellidoController.clear();
-                    emailController.clear();
-                    direccionController.clear();
-                    telefonoController.clear();
-                    estadoController.clear();
-
-                    // Mostrar un mensaje de éxito después de enviar la información
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                        content: Text('Cliente creado con éxito'),
-                      ),
-                    );
-
-                    // Redirigir al usuario a la pantalla de clientes
-                    final route = MaterialPageRoute(
-                        builder: (context) => const ClientesScreen());
-                    Navigator.push(context, route);
-
                   }
                 },
                 child: const Text('Crear Cliente'),
               ),
             ],
           ),
+        ),
+      ),
+      bottomNavigationBar: const BottomAppBar(
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(
+              'Alison Yiseth Puerta Velez ADSO 2670689 ',
+              style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
+            ),
+            Icon(Icons.terminal_outlined,
+                color: Color.fromARGB(255, 88, 133, 255), size: 20),
+          ],
         ),
       ),
     );

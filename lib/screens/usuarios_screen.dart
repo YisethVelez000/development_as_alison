@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:development_as_alison/screens/crear_usuarios_screen.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 
@@ -30,7 +31,7 @@ class EditarUsuarios {
 
   //Realizamos el fetch a la API
   Future<EditarUsuarios> fetchEditarUsuarios() async {
-    final response = await http.get(Uri.parse(
+    final response = await http.put(Uri.parse(
         'https://apiusuarios-copia.onrender.com/api/user/listarUsuarios'));
     if (response.statusCode == 200) {
       return EditarUsuarios.fromJson(jsonDecode(response.body));
@@ -90,19 +91,23 @@ class Usuarios {
 }
 
 class _UsuariosScreenState extends State<UsuariosScreen> {
-  // Creamos los controladores para los campos de texto
-  final TextEditingController _nameController = TextEditingController();
-  final TextEditingController _emailController = TextEditingController();
-  final TextEditingController _rolController = TextEditingController();
-
   //Metodo para editar usuarios
-  void editarUsuario(String id, usuarioEditado) {
-    final EditarUsuarios editarUsuarios = EditarUsuarios(
-      name: _nameController.text,
-      email: _emailController.text,
-      rol: _rolController.text,
+  Future<void> editarUsuario(String email, Map<String, dynamic> usuario) async {
+    final response = await http.put(
+      Uri.parse(
+          'https://apiusuarios-copia.onrender.com/api/user/editarUsuario/$email'),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+      body: jsonEncode(usuario),
     );
-    editarUsuarios.fetchEditarUsuarios();
+    if (response.statusCode != 200) {
+      print(response.body);
+      print(response.statusCode);
+      throw Exception('Failed to update usuario');
+    } else {
+      //Mostramos un dialogo de usuario editado con exito
+    }
   }
 
   @override
@@ -136,10 +141,12 @@ class _UsuariosScreenState extends State<UsuariosScreen> {
                                     text: snapshot.data![index].email);
                                 final rolController = TextEditingController(
                                     text: snapshot.data![index].rol);
+                                final email = snapshot.data![index].email;
 
                                 return AlertDialog(
                                   title: const Text('Editar Usuario'),
                                   content: Column(
+                                    mainAxisSize: MainAxisSize.min,
                                     children: [
                                       TextField(
                                         controller: nameController,
@@ -151,30 +158,35 @@ class _UsuariosScreenState extends State<UsuariosScreen> {
                                                 Radius.circular(20)),
                                           ),
                                           hintText: snapshot.data![index].name,
+                                          labelText: 'Nombre',
                                         ),
                                       ),
+                                      const SizedBox(height: 20),
                                       TextField(
                                         controller: emailController,
-                                        decoration: const InputDecoration(
-                                          border: OutlineInputBorder(
+                                        decoration: InputDecoration(
+                                          border: const OutlineInputBorder(
                                             borderSide:
                                                 BorderSide(color: Colors.blue),
                                             borderRadius: BorderRadius.all(
                                                 Radius.circular(20)),
                                           ),
-                                          hintText: 'Email',
+                                          labelText: 'Email',
+                                          hintText: snapshot.data![index].email,
                                         ),
                                       ),
+                                      const SizedBox(height: 20),
                                       TextField(
                                         controller: rolController,
-                                        decoration: const InputDecoration(
-                                          border: OutlineInputBorder(
+                                        decoration: InputDecoration(
+                                          border: const OutlineInputBorder(
                                             borderSide:
                                                 BorderSide(color: Colors.blue),
                                             borderRadius: BorderRadius.all(
                                                 Radius.circular(20)),
                                           ),
-                                          hintText: 'Rol',
+                                          hintText: snapshot.data![index].rol,
+                                          labelText: 'Rol',
                                         ),
                                       ),
                                     ],
@@ -182,19 +194,30 @@ class _UsuariosScreenState extends State<UsuariosScreen> {
                                   actions: [
                                     TextButton(
                                       onPressed: () {
-                                        var usuarioEditado = {
+                                        Navigator.of(context).pop();
+                                      },
+                                      child: const Text('Cancelar',
+                                          style: TextStyle(
+                                              fontSize: 20,
+                                              fontWeight: FontWeight.bold)),
+                                    ),
+                                    TextButton(
+                                      onPressed: () {
+                                        var usuario = {
                                           'name': nameController.text,
                                           'email': emailController.text,
                                           'rol': rolController.text,
                                         };
-                                        editarUsuario(snapshot.data![index].id,
-                                            usuarioEditado);
-                                          
-                                            setState(() {
-                                             
-                                            });
+                                        editarUsuario(email,
+                                            usuario as Map<String, dynamic>);
+
+                                        setState(() {});
+                                        Navigator.of(context).pop();
                                       },
-                                      child: const Text('Editar'),
+                                      child: const Text('Editar',
+                                          style: TextStyle(
+                                              fontSize: 20,
+                                              fontWeight: FontWeight.bold)),
                                     ),
                                   ],
                                 );
@@ -219,6 +242,14 @@ class _UsuariosScreenState extends State<UsuariosScreen> {
           return const CircularProgressIndicator();
         },
       ),
+      //Creamos un boton para crear un nuevo usuario
+      floatingActionButton: FloatingActionButton(onPressed: (){
+        final route = MaterialPageRoute(builder: (context) => const RegistrarClientesScreen());
+        Navigator.push(context, route);
+      },
+      child: const Icon(Icons.add),
+      ),
+
     );
   }
 }
