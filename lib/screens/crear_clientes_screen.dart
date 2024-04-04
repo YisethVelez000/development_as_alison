@@ -17,6 +17,7 @@ class _CrearClientesScreenState extends State<CrearClientesScreen> {
   final TextEditingController apellidoController = TextEditingController();
   final TextEditingController direccionController = TextEditingController();
   final TextEditingController telefonoController = TextEditingController();
+  final TextEditingController ciudadController = TextEditingController();
   final estadoController = TextEditingController();
 
   String? nameError;
@@ -25,6 +26,7 @@ class _CrearClientesScreenState extends State<CrearClientesScreen> {
   String? direccionError;
   String? telefonoError;
   String? estadoError;
+  String? ciudadError;
 
   // Link API para crear clientes
   final url =
@@ -274,6 +276,33 @@ class _CrearClientesScreenState extends State<CrearClientesScreen> {
                   },
                 ),
               ),
+              //Creamos el campo ciudad
+              const SizedBox(height: 20),
+              Padding(padding: 
+              const EdgeInsets.symmetric(horizontal: 20),
+              child: TextFormField(
+                controller: ciudadController,
+                decoration: InputDecoration(
+                  labelText: 'Ciudad',
+                  border: const OutlineInputBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(20)),
+                    ),
+                    errorText: ciudadError
+                ),
+                validator: (value){
+                  if(value!.isEmpty){
+                    setState(() {
+                      ciudadError ="El campo ciudad es requerido";
+                    });
+                  }else{
+                    setState(() {
+                      ciudadError = null;
+                    });
+                  }
+                  return null;
+                },
+              ),
+              ),
               if (estadoError != null) const SizedBox(height: 5.0),
               const SizedBox(height: 20.0),
               MaterialButton(
@@ -287,6 +316,7 @@ class _CrearClientesScreenState extends State<CrearClientesScreen> {
                       'telefono': telefonoController.text,
                       'estado': estadoController.text,
                       'rol': 'cliente',
+                      "ciudad": ciudadController.text
                     };
                     crearCliente(clientes);
                   }

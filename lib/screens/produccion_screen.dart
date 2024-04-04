@@ -1,7 +1,9 @@
 import 'dart:convert';
 
 import 'package:development_as_alison/screens/crear_orden_screen.dart';
+import 'package:development_as_alison/screens/editar_orden_screen.dart';
 import 'package:flutter/material.dart';
+
 import 'package:http/http.dart' as http;
 
 class ProduccionScreen extends StatefulWidget {
@@ -76,8 +78,8 @@ class _ProduccionScreenState extends State<ProduccionScreen> {
       throw Exception('Failed to edit cliente');
     } else {
       setState(() {});
-            // ignore: use_build_context_synchronously
-            ScaffoldMessenger.of(context).showSnackBar(
+      // ignore: use_build_context_synchronously
+      ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Orden editada correctamente')));
     }
   }
@@ -86,13 +88,11 @@ class _ProduccionScreenState extends State<ProduccionScreen> {
     final response = await http.delete(Uri.parse(
         'https://apiusuarios-copia.onrender.com/api/routes/ordenes/$id'));
     if (response.statusCode == 200) {
-      setState(() {
-        
-      });
+      setState(() {});
       //Mostramos un mensaje de que la orden fue eliminada
       // ignore: use_build_context_synchronously
-      ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Orden eliminada')));
+      ScaffoldMessenger.of(context)
+          .showSnackBar(const SnackBar(content: Text('Orden eliminada')));
     } else {
       throw Exception('Failed to delete orden');
     }
@@ -110,7 +110,6 @@ class _ProduccionScreenState extends State<ProduccionScreen> {
           if (snapshot.hasData) {
             List<OrdenProduccion>? data = snapshot.data;
             return ListView.builder(
-              
               itemCount: data!.length,
               itemBuilder: (context, index) {
                 //Hacemos una funcion para eliminar la hora de la fecha estimada
@@ -146,10 +145,9 @@ class _ProduccionScreenState extends State<ProduccionScreen> {
                                     ),
                                     TextButton(
                                       onPressed: () {
-                                        deleteOrden(
-                                            data[index].id);
+                                        deleteOrden(data[index].id);
                                         setState(() {});
-                                        
+
                                         Navigator.of(context).pop();
                                       },
                                       child: const Text('Eliminar'),
@@ -161,153 +159,30 @@ class _ProduccionScreenState extends State<ProduccionScreen> {
                           },
                         ),
                         IconButton(
-                          icon: const Icon(Icons.edit),
-                          onPressed: () {
-                            //Aqui se puede agregar la funcionalidad para editar la orden
-                            //Mostramos un dialogo con todos los campos para editar
-                            showDialog(
-                                context: context,
-                                builder: (BuildContext context) {
-                                  final nroOrden = data[index].nroOrden;
-                                  final fechaEstimada = fechaFormateada;
-                                  final tallas = data[index].tallas;
-                                  final cantidad = data[index].cantidad;
-                                  final color = data[index].color;
-                                  final estado = data[index].estado;
-
-                                  nroOrdenController.text = nroOrden.toString();
-                                  fechaEstimadaController.text = fechaEstimada;
-                                  tallasController.text = tallas.join(', ');
-                                  cantidadController.text = cantidad.toString();
-                                  colorController.text = color.join(', ');
-                                  estadoController.text = estado;
-                                  return AlertDialog(
-                                    title: const Text('Editar Orden'),
-                                    content: Column(
-                                      children: [
-                                        TextField(
-                                          controller: nroOrdenController,
-                                          decoration: InputDecoration(
-                                              border: const OutlineInputBorder(
-                                                borderSide: BorderSide(
-                                                    color: Colors.blue),
-                                                borderRadius: BorderRadius.all(
-                                                    Radius.circular(20)),
-                                              ),
-                                              labelText: 'Nro Orden',
-                                              hintText: nroOrden.toString()),
-                                        ),
-                                        const SizedBox(
-                                          height: 20,
-                                        ),
-                                        TextField(
-                                          controller: fechaEstimadaController,
-                                          decoration: InputDecoration(
-                                              border: const OutlineInputBorder(
-                                                borderSide: BorderSide(
-                                                    color: Colors.blue),
-                                                borderRadius: BorderRadius.all(
-                                                    Radius.circular(20)),
-                                              ),
-                                              labelText: 'Fecha Estimada',
-                                              hintText: fechaEstimada),
-                                        ),
-                                        const SizedBox(
-                                          height: 20,
-                                        ),
-                                        TextField(
-                                          controller: tallasController,
-                                          decoration: InputDecoration(
-                                              border: const OutlineInputBorder(
-                                                borderSide: BorderSide(
-                                                    color: Colors.blue),
-                                                borderRadius: BorderRadius.all(
-                                                    Radius.circular(20)),
-                                              ),
-                                              labelText: 'Tallas',
-                                              hintText: tallas.join(', ')),
-                                        ),
-                                        const SizedBox(
-                                          height: 20,
-                                        ),
-                                        TextField(
-                                          controller: cantidadController,
-                                          decoration: InputDecoration(
-                                              border: const OutlineInputBorder(
-                                                borderSide: BorderSide(
-                                                    color: Colors.blue),
-                                                borderRadius: BorderRadius.all(
-                                                    Radius.circular(20)),
-                                              ),
-                                              labelText: 'Cantidad',
-                                              hintText: cantidad.toString()),
-                                        ),
-                                        const SizedBox(
-                                          height: 20,
-                                        ),
-                                        TextField(
-                                          controller: colorController,
-                                          decoration: InputDecoration(
-                                              border: const OutlineInputBorder(
-                                                borderSide: BorderSide(
-                                                    color: Colors.blue),
-                                                borderRadius: BorderRadius.all(
-                                                    Radius.circular(20)),
-                                              ),
-                                              labelText: 'Color',
-                                              hintText: color.join(', ')),
-                                        ),
-                                        const SizedBox(
-                                          height: 20,
-                                        ),
-                                        TextField(
-                                          controller: estadoController,
-                                          decoration: InputDecoration(
-                                              border: const OutlineInputBorder(
-                                                borderSide: BorderSide(
-                                                    color: Colors.blue),
-                                                borderRadius: BorderRadius.all(
-                                                    Radius.circular(20)),
-                                              ),
-                                              labelText: 'Estado',
-                                              hintText: estado),
-                                        ),
-                                      ],
-                                    ),
-                                    actions: [
-                                      TextButton(
-                                        onPressed: () =>
-                                            Navigator.of(context).pop(),
-                                        child: const Text('Cancelar'),
-                                      ),
-                                      TextButton(
-                                        onPressed: () {
-                                          //Creamos un objeto con los campos editados
-                                          final ordenEditada = {
-                                            'nroOrden': nroOrdenController.text,
-                                            'fechaEstimada':
-                                                fechaEstimadaController.text,
-                                            'tallas': tallasController.text,
-                                            'cantidad': cantidadController.text,
-                                            'color': colorController.text,
-                                            'estado': estadoController.text
-                                          };
-                                          //Llamamos a la funcion para editar la orden
-                                          editarOrden(
-                                              data[index].id, ordenEditada);
-
-                                          setState(() {
-                                            Navigator.of(context).pop();
-                                          });
-                                        },
-                                        child: const Text('Editar'),
-                                      ),
-                                    ],
-                                  );
-                                });
-                            setState(() {});
-                          },
-                        ),
+                            icon: const Icon(Icons.edit),
+                            onPressed: () {
+                              MaterialPageRoute(
+                                  builder: (context) => EditarOrdenScreen(
+                                        nroOrden: data[index].nroOrden,
+                                        tallas: data[index].tallas,
+                                        color: data[index].color,
+                                        fechaEstimada: fechaFormateada,
+                                        cantidad: data[index].cantidad,
+                                        estado: data[index].estado,
+                                        id: data[index].id,
+                                      ));
+                              final route = MaterialPageRoute(
+                                  builder: (context) => EditarOrdenScreen(
+                                        nroOrden: data[index].nroOrden,
+                                        tallas: data[index].tallas,
+                                        color: data[index].color,
+                                        fechaEstimada: fechaFormateada,
+                                        cantidad: data[index].cantidad,
+                                        estado: data[index].estado,
+                                        id: data[index].id,
+                                      ));
+                              Navigator.push(context, route);
+                            })
                       ],
                     ));
               },
